@@ -757,6 +757,10 @@ After adding the secret, open Actions -> Release Plz -> Run workflow on `main`.
 The first run publishes the three crates and creates `v0.1.0` automatically.
 You can also push any commit; the release job runs on every push to `main`.
 
+crates.io requires a verified email address before the first publish. If the
+release job reports `A verified email address is required`, verify the email in
+the crates.io account settings and re-run the Release Plz workflow.
+
 The first release publishes `qstream-core` and `qstream-transport` before
 `qstream-cli`. Until those crates exist on crates.io, `cargo package -p
 qstream-cli` cannot resolve them; `cargo package -p qstream-core -p
