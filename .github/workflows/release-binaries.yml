@@ -1,15 +1,84 @@
 name: Release binaries
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Release Plz"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build, for example v0.1.0"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
+  prepare:
+    name: Resolve release tag
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: resolve
+        name: Resolve tag and check assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            tag="$INPUT_TAG"
+          else
+            tag="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName 2>/dev/null || true)"
+          fi
+
+          if [ -z "$tag" ]; then
+            echo "No release found; skipping binary upload."
+            exit 0
+          fi
+
+          git fetch --tags --force
+          if ! git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "Tag $tag is not present; skipping binary upload."
+            exit 0
+          fi
+
+          assets="$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' 2>/dev/null || true)"
+          expected=(
+            "qstream-${tag}-x86_64-unknown-linux-gnu.tar.gz"
+            "qstream-${tag}-x86_64-pc-windows-msvc.zip"
+            "qstream-${tag}-x86_64-apple-darwin.tar.gz"
+            "qstream-${tag}-aarch64-apple-darwin.tar.gz"
+          )
+
+          missing=()
+          for asset in "${expected[@]}"; do
+            if ! grep -qxF "$asset" <<< "$assets"; then
+              missing+=("$asset")
+            fi
+          done
+
+          if [ "${#missing[@]}" -eq 0 ]; then
+            echo "All binary archives already exist for $tag; skipping."
+            exit 0
+          fi
+
+          printf 'Missing archives: %s\n' "${missing[*]}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
   upload:
     name: ${{ matrix.target }}
+    needs: prepare
+    if: needs.prepare.outputs.tag != ''
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,6 +94,8 @@ jobs:
             target: aarch64-apple-darwin
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ needs.prepare.outputs.tag }}
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
@@ -32,7 +103,8 @@ jobs:
         with:
           bin: qstream
           target: ${{ matrix.target }}
-          archive: qstream-${{ github.ref_name }}-${{ matrix.target }}
+          archive: qstream-${{ needs.prepare.outputs.tag }}-${{ matrix.target }}
           checksum: sha256
           include: README.md,LICENSE-MIT,LICENSE-APACHE,NOTICE
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: refs/tags/${{ needs.prepare.outputs.tag }}
