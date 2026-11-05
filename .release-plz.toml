@@ -1,0 +1,17 @@
+[workspace]
+changelog_update = false
+changelog_path = "./CHANGELOG.md"
+git_release_enable = false
+git_tag_enable = false
+publish_timeout = "10m"
+release_always = true
+semver_check = false
+
+[[package]]
+name = "qstream-cli"
+changelog_update = true
+changelog_include = ["qstream-core", "qstream-transport"]
+changelog_path = "./CHANGELOG.md"
+git_release_enable = true
+git_tag_enable = true
+git_tag_name = "v{{ version }}"

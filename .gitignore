@@ -1,0 +1,27 @@
+# Rust build output
+/target/
+
+# Android stand build output
+tools/probe-app/.gradle/
+tools/probe-app/build/
+tools/probe-app/app/build/
+tools/probe-app/app/.cxx/
+tools/probe-app/local.properties
+
+# Vendor layer binary, pulled from the device
+tools/probe-app/app/src/main/jniLibs/**/*.so
+
+# Local captures and traces
+*.apk
+*.idsig
+*.pb
+*.bin
+*.csv
+*.out
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

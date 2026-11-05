@@ -1,0 +1,16 @@
+[package]
+name = "qstream-transport"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "TCP and Unix transports for the Adreno qprofiler QSTREAM socket."
+documentation = "https://docs.rs/qstream-transport"
+readme = "README.md"
+keywords = ["adreno", "gpu", "profiler", "transport"]
+categories = ["api-bindings", "development-tools::debugging"]
+
+[dependencies]
+thiserror.workspace = true

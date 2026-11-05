@@ -1,0 +1,27 @@
+* text=auto
+
+.gitattributes text eol=lf
+.gitignore text eol=lf
+*.rs text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.hex text eol=lf
+*.gradle text eol=lf
+*.java text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.frag text eol=lf
+*.vert text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+gradlew text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+*.so binary
+*.pb binary
+*.apk binary
+*.jar binary
+*.png binary

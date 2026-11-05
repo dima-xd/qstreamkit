@@ -1,0 +1,12 @@
+QStreamKit
+Copyright 2026 QStreamKit contributors
+
+This product includes software developed by the QStreamKit contributors.
+
+Qualcomm, Adreno, Snapdragon and QSTREAM are trademarks or registered
+trademarks of Qualcomm Incorporated. QStreamKit is an independent project and
+is not affiliated with, endorsed by, or sponsored by Qualcomm.
+
+QStreamKit does not distribute Qualcomm binaries. The VK_LAYER_ADRENO_qprofiler
+layer is pulled from the user's own device and remains subject to Qualcomm's
+terms.

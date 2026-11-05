@@ -1,0 +1,16 @@
+[package]
+name = "qstream-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Parser and framing primitives for the Adreno qprofiler QSTREAM socket."
+documentation = "https://docs.rs/qstream-core"
+readme = "README.md"
+keywords = ["adreno", "gpu", "profiler", "vulkan"]
+categories = ["api-bindings", "development-tools::debugging"]
+
+[dependencies]
+thiserror.workspace = true

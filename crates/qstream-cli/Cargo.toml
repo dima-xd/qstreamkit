@@ -1,0 +1,24 @@
+[package]
+name = "qstream-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Command-line client for the Adreno qprofiler QSTREAM socket."
+documentation = "https://docs.rs/qstream-cli"
+readme = "README.md"
+keywords = ["adreno", "gpu", "profiler", "vulkan", "cli"]
+categories = ["command-line-utilities", "development-tools::debugging"]
+
+[[bin]]
+name = "qstream"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+qstream-core = { version = "0.1.0", path = "../qstream-core" }
+qstream-transport = { version = "0.1.0", path = "../qstream-transport" }
+serde_json.workspace = true
